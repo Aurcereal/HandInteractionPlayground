@@ -34,17 +34,17 @@ public class S_Hand : MonoBehaviour
         {
 
             // Finger checking
-            Finger[] fingers = hand.fingers;
-            for(int i=0; i<fingers.Length; i++)
-            {
-                for(int j=i+1; j<fingers.Length; j++)
-                {
-                    if ((fingers[i].TipPosition - fingers[j].TipPosition).magnitude <= fingerPairDistanceThreshold)
-                    {
-                        Debug.Log($"Fingers {i} and {j} are touching");
-                    }
-                }
-            }
+            // Finger[] fingers = hand.fingers;
+            // for(int i=0; i<fingers.Length; i++)
+            // {
+            //     for(int j=i+1; j<fingers.Length; j++)
+            //     {
+            //         if ((fingers[i].TipPosition - fingers[j].TipPosition).magnitude <= fingerPairDistanceThreshold)
+            //         {
+            //             Debug.Log($"Fingers {i} and {j} are touching");
+            //         }
+            //     }
+            // }
             if (!isGrabbing && hand.GrabStrength > activationThreshold)
             {
                 isGrabbing = true;
@@ -78,11 +78,13 @@ public class S_Hand : MonoBehaviour
         currHeldObject = otherRb;
 
         currHeldObject.useGravity = false;
+        currHeldObject.isKinematic = true;
     }
 
     public void OnReleaseObject()
     {
         currHeldObject.useGravity = true;
+        currHeldObject.isKinematic = false;
 
         currHeldObject = null;
     }
@@ -96,11 +98,12 @@ public class S_Hand : MonoBehaviour
             Quaternion targetRotation = targetTransform.rotation;
 
             currHeldObject.MoveRotation(targetRotation);
-            Vector3 diff = targetPos - currHeldObject.position;
-            if (Vector3.Dot(diff, diff) > 0.05 * 0.05)
-            {
-                currHeldObject.velocity = 40f * diff; // / Time.deltaTime
-            }
+            currHeldObject.MovePosition(targetPos);
+            // Vector3 diff = targetPos - currHeldObject.position;
+            // if (Vector3.Dot(diff, diff) > 0.05 * 0.05)
+            // {
+            //     currHeldObject.velocity = diff * 30.0f;
+            // }
         }
     }
 }
