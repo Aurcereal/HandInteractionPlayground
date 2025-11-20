@@ -21,7 +21,8 @@ public class S_HandInteractor : MonoBehaviour
 
     public void OnGrabStart()
     {
-        StartCoroutine(ActivateTriggerThenDeactivate());
+        if(enabled)
+            StartCoroutine(ActivateTriggerThenDeactivate());
     }
 
     public void OnGrabEnd()

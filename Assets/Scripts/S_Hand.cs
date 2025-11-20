@@ -14,7 +14,21 @@ public class S_Hand : MonoBehaviour
     [Header("Parameters")]
     [Range(0.0f, 1.0f)] public float activationThreshold = 0.8f;
     [Range(0.0f, 1.0f)] public float deactivationThreshold = 0.6f;
-    public float fingerPairDistanceThreshold = 0.1f;
+
+    public static S_Hand LeftHand {get; private set;}
+    public static S_Hand RightHand {get; private set;}
+    public static S_Hand[] Hands => new S_Hand[] {LeftHand, RightHand};
+
+    public S_HandField HandField {get; private set;}
+    private void Awake()
+    {
+        if(chirality == Chirality.Left)
+            LeftHand = this;
+        else
+            RightHand = this;
+
+        HandField = GetComponent<S_HandField>();
+    }
 
     private void Start()
     {
@@ -22,7 +36,7 @@ public class S_Hand : MonoBehaviour
         interactor.hand = this;
     }
 
-    bool isGrabbing = false;
+    public bool IsGrabbing {get; private set;} = false;
     Matrix4x4 currHandTransform;
     Matrix4x4 objectToHand;
     Rigidbody currHeldObject;
@@ -33,31 +47,19 @@ public class S_Hand : MonoBehaviour
         if(hand != null)
         {
 
-            // Finger checking
-            // Finger[] fingers = hand.fingers;
-            // for(int i=0; i<fingers.Length; i++)
-            // {
-            //     for(int j=i+1; j<fingers.Length; j++)
-            //     {
-            //         if ((fingers[i].TipPosition - fingers[j].TipPosition).magnitude <= fingerPairDistanceThreshold)
-            //         {
-            //             Debug.Log($"Fingers {i} and {j} are touching");
-            //         }
-            //     }
-            // }
-            if (!isGrabbing && hand.GrabStrength > activationThreshold)
+            if (!IsGrabbing && hand.GrabStrength > activationThreshold)
             {
-                isGrabbing = true;
+                IsGrabbing = true;
                 interactor.OnGrabStart();
             }
-            else if (isGrabbing && hand.GrabStrength < deactivationThreshold)
+            else if (IsGrabbing && hand.GrabStrength < deactivationThreshold)
             {
-                isGrabbing = false;
+                IsGrabbing = false;
                 interactor.OnGrabEnd();
                 if (currHeldObject != null) OnReleaseObject();
             }
 
-            if (isGrabbing)
+            if (IsGrabbing)
             {
                 interactorTransform.position = hand.PalmPosition;
                 interactorTransform.rotation = hand.Rotation;
@@ -66,7 +68,7 @@ public class S_Hand : MonoBehaviour
         } 
         else
         {
-            isGrabbing = false;
+            IsGrabbing = false;
             interactor.OnGrabEnd();
             if (currHeldObject != null) OnReleaseObject();
         }
