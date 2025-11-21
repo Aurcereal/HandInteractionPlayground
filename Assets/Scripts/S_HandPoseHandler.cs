@@ -7,10 +7,8 @@ using UnityEngine;
 public class S_HandPoseHandler : MonoBehaviour
 {
     [SerializeField] PoseState.Action thumbIndexAction;
-
-    public float fingerPairDistanceThreshold = 0.05f;
-
-    const int ACTION_COUNT = 2;
+    [SerializeField] PoseState.Action thumbMiddleAction;
+    [SerializeField] PoseState.Action thumbRingAction;
 
     S_Hand sHand;
     void Awake()
@@ -24,21 +22,43 @@ public class S_HandPoseHandler : MonoBehaviour
         sHand.leapProvider.OnUpdateFrame += OnUpdateFrame;
     }
 
-    public void OnAttractorStart()
+    #region Attractor
+    void OnAttractorStart()
     {
         sHand.HandField.Multiplier = 1f;
     }
-    public void WhileAttractorContinuing(Vector3 pos)
+    void WhileAttractorContinuing(Vector3 pos)
     {
         sHand.HandField.Position = pos;
     }
-    public void OnAttractorEnd()
+    void OnAttractorEnd()
     {
         sHand.HandField.Multiplier = 0f;
     }
+    #endregion
+
+    #region Creation
+    void OnCreation(Vector3 origin, Vector3 direction)
+    {
+        Debug.Log("CREATE!");
+
+    }
+    #endregion
+
+    #region Explosion
+    void OnExplosion(Vector3 origin, Vector3 direction)
+    {
+        Debug.Log($"EXPLODE! {origin} {direction}");
+        Instantiate(S_HandManager.Ins.ExplosionParticles, origin, Quaternion.AngleAxis(UnityEngine.Random.Range(0f, 360f), UnityEngine.Random.onUnitSphere));
+    }
+    #endregion
 
     void OnUpdateFrame(Frame frame)
     {
+        const int att = (int) PoseState.Action.ATTRACT;
+        const int cre = (int) PoseState.Action.CREATE;
+        const int exp = (int) PoseState.Action.EXPLODE;
+
         Hand hand = frame.GetHand(sHand.chirality);
 
         if(hand != null)
@@ -47,21 +67,26 @@ public class S_HandPoseHandler : MonoBehaviour
 
             UpdatePoseState(hand);
 
-            if(poseState.actionsEnabled[(int) PoseState.Action.ATTRACT])
+            if(poseState.actionsEnabled[att])
             {
-                if(!prevPoseState.actionsEnabled[(int) PoseState.Action.ATTRACT])
+                if(!prevPoseState.actionsEnabled[att])
                     OnAttractorStart();
                 else
-                    WhileAttractorContinuing(0.5f * (fingers[0].TipPosition + fingers[1].TipPosition));
+                    WhileAttractorContinuing(poseState.actionPositions[att]);
             } 
-            else if(prevPoseState.actionsEnabled[(int) PoseState.Action.ATTRACT])
+            else if(prevPoseState.actionsEnabled[att])
             {
                 OnAttractorEnd();
             }
 
-            if(poseState.actionsEnabled[(int) PoseState.Action.CREATE] && !prevPoseState.actionsEnabled[(int) PoseState.Action.CREATE])
+            if(poseState.actionsEnabled[cre] && !prevPoseState.actionsEnabled[cre])
             {
-                Debug.Log("CREATE!");
+                OnCreation(poseState.actionPositions[cre], sHand.interactorTransform.forward);
+            }
+
+            if(poseState.actionsEnabled[exp] && !prevPoseState.actionsEnabled[exp])
+            {
+                OnExplosion(poseState.actionPositions[exp], sHand.interactorTransform.forward);
             }
             
         }
@@ -78,18 +103,25 @@ public class S_HandPoseHandler : MonoBehaviour
             {
                 for(int j=i+1; j<fingers.Length; j++)
                 {
-                    if ((fingers[i].TipPosition - fingers[j].TipPosition).magnitude <= fingerPairDistanceThreshold)
+                    if ((fingers[i].TipPosition - fingers[j].TipPosition).magnitude <= S_HandManager.Ins.fingerPairDistanceThreshold)
                     {
-                        // Debug.Log($"Fingers {i} and {j} are touching");
-                        if(i == 0 && j == 1)
+                        PoseState.Action? actionType = 
+                            (i == 0 && j == 1) ? thumbIndexAction :
+                            (i == 0 && j == 2) ? thumbMiddleAction :
+                            (i == 0 && j == 3) ? thumbRingAction : null;
+                        if(actionType != null)
                         {
-                            poseState.actionsEnabled[(int) thumbIndexAction] = true;
+                            int actionIndex = (int) actionType;
+                            poseState.actionsEnabled[actionIndex] = true;
+                            poseState.actionPositions[actionIndex] = 0.5f * (fingers[i].TipPosition + fingers[j].TipPosition);
                         }
                     }
                 }
             }
         }
     }
+
+    const int ACTION_COUNT = 3;
 
     PoseState prevPoseState;
     PoseState poseState;
@@ -98,9 +130,14 @@ public class S_HandPoseHandler : MonoBehaviour
         public enum Action
         {
             ATTRACT,
-            CREATE
+            CREATE,
+            EXPLODE
         }
         public bool[] actionsEnabled;
-        public PoseState(int actionCount) {actionsEnabled = new bool[ACTION_COUNT];}
+        public Vector3[] actionPositions;
+        public PoseState(int actionCount) {
+            actionsEnabled = new bool[ACTION_COUNT];
+            actionPositions = new Vector3[ACTION_COUNT];
+        }
     }
 }

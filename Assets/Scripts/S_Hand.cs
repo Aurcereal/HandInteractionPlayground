@@ -59,12 +59,10 @@ public class S_Hand : MonoBehaviour
                 if (currHeldObject != null) OnReleaseObject();
             }
 
-            if (IsGrabbing)
-            {
-                interactorTransform.position = hand.PalmPosition;
-                interactorTransform.rotation = hand.Rotation;
-                currHandTransform = Matrix4x4.Translate(hand.PalmPosition) * Matrix4x4.Rotate(hand.Rotation);
-            }
+            // Update Interactor Transform
+            interactorTransform.position = hand.PalmPosition;
+            interactorTransform.rotation = hand.Rotation;
+            currHandTransform = Matrix4x4.Translate(hand.PalmPosition) * Matrix4x4.Rotate(hand.Rotation);
         } 
         else
         {
