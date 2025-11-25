@@ -5,7 +5,7 @@ using Leap;
 using System;
 
 [RequireComponent(typeof(Rigidbody))]
-[RequireComponent(typeof(Collider))]
+//[RequireComponent(typeof(Collider))]
 public class S_Prop : MonoBehaviour
 {
     bool grabbable = true;
@@ -21,7 +21,7 @@ public class S_Prop : MonoBehaviour
     {
         if(grabbable) {
             S_HandInteractor interactor = other.GetComponent<S_HandInteractor>();
-            if (interactor != null)
+            if (interactor != null) // Is it an SHandInteractor?
             {
                 interactor.OnCollide(rb);
             }
