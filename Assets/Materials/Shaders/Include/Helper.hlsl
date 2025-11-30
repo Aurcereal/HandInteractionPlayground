@@ -16,3 +16,8 @@ void ChromaticAbberation_float(float2 UV, float Rotation, float Spread, out floa
     UV1 = UV+v*Spread;
     UV2 = UV-v*Spread;
 }
+
+void Sample3DChecker_float(float3 Position, float Size, out float Value) {
+    float3 id = floor(Position/Size);
+    Value = step(abs(fmod(id.x+id.y+id.z+1000., 2.)-1.), .5);
+}
