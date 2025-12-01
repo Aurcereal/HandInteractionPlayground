@@ -38,6 +38,7 @@ public class S_Hand : MonoBehaviour
 
     private void OnDisable()
     {
+        Debug.Log("DISABLE");
         if (currHeldObject != null) Destroy(currHeldObject);
     }
 
@@ -48,7 +49,6 @@ public class S_Hand : MonoBehaviour
     void OnUpdateFrame(Frame frame)
     {
         Hand hand = frame.GetHand(chirality);
-        Debug.Log(IsGrabbing);
 
         if(hand != null)
         {
@@ -81,6 +81,9 @@ public class S_Hand : MonoBehaviour
 
     public void OnGrabbedObject(Rigidbody otherRb)
     {
+        if(currHeldObject != null) 
+            OnReleaseObject();
+
         objectToHand = interactorTransform.worldToLocalMatrix * otherRb.transform.localToWorldMatrix;
         currHeldObject = otherRb;
 
