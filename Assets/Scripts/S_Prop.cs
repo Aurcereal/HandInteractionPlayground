@@ -5,9 +5,10 @@ using Leap;
 using System;
 
 [RequireComponent(typeof(Rigidbody))]
-//[RequireComponent(typeof(Collider))]
 public class S_Prop : MonoBehaviour
 {
+    public static HashSet<S_Prop> AllProps {get; private set;} = new();
+
     bool grabbable = true;
     bool forceInteractions = true;
 
@@ -15,6 +16,12 @@ public class S_Prop : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        AllProps.Add(this);
+    }
+
+    private void OnDisable()
+    {
+        AllProps.Remove(this);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -34,5 +41,8 @@ public class S_Prop : MonoBehaviour
         {
             rb.AddForce(S_HandField.SumAllForceFields(transform.position));
         }
+        
+        if(transform.position.y < -10.0f) 
+            Destroy(this);
     }
 }

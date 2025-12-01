@@ -36,6 +36,11 @@ public class S_Hand : MonoBehaviour
         interactor.hand = this;
     }
 
+    private void OnDisable()
+    {
+        if (currHeldObject != null) Destroy(currHeldObject);
+    }
+
     public bool IsGrabbing {get; private set;} = false;
     Matrix4x4 currHandTransform;
     Matrix4x4 objectToHand;
@@ -43,6 +48,7 @@ public class S_Hand : MonoBehaviour
     void OnUpdateFrame(Frame frame)
     {
         Hand hand = frame.GetHand(chirality);
+        Debug.Log(IsGrabbing);
 
         if(hand != null)
         {
@@ -62,6 +68,7 @@ public class S_Hand : MonoBehaviour
             // Update Interactor Transform
             interactorTransform.position = hand.PalmPosition;
             interactorTransform.rotation = hand.Rotation;
+            interactorTransform.SetLossyScale(Vector3.one);
             currHandTransform = Matrix4x4.Translate(hand.PalmPosition) * Matrix4x4.Rotate(hand.Rotation);
         } 
         else
@@ -74,7 +81,7 @@ public class S_Hand : MonoBehaviour
 
     public void OnGrabbedObject(Rigidbody otherRb)
     {
-        objectToHand = currHandTransform.inverse * otherRb.transform.localToWorldMatrix;
+        objectToHand = interactorTransform.worldToLocalMatrix * otherRb.transform.localToWorldMatrix;
         currHeldObject = otherRb;
 
         currHeldObject.useGravity = false;
