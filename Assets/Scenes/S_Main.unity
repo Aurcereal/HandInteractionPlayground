@@ -846,6 +846,9 @@ MonoBehaviour:
   - {fileID: 4606599532011492224, guid: 5c6224198fc62c1419ec872cdd5f2187, type: 3}
   - {fileID: 7463823401727234918, guid: 8651911a970ea2b4ca29ddb4e608594d, type: 3}
   - {fileID: 6746386116868300091, guid: b834ccefa0ed2574195e798b8f8902a8, type: 3}
+  - {fileID: 2946231000172566301, guid: 253f8b812305eb843ad9e4ab32ec8586, type: 3}
+  - {fileID: 5618426157901662171, guid: 40bc5920ff3a2f844bb9b3df68afb590, type: 3}
+  - {fileID: 8465243249953191486, guid: df11310be249a76418a10f4b76050875, type: 3}
   ObjectMaterials:
   - {fileID: 2100000, guid: 63372f4f9fbcfd7479da881e543cf14e, type: 2}
   - {fileID: 2100000, guid: bdd69a09690c9e04e8f2bbce87805d31, type: 2}
