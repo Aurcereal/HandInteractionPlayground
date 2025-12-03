@@ -67,3 +67,10 @@ void Sample3DSpherePattern_float(float3 Position, float RepeatSize, float DotSiz
 
     Value = max(exists, smallDot);
 }
+
+void BorderFadeout_float(float2 UV, float2 Range, out float Falloff) {
+    float2 p = UV-.5;
+    p = abs(p);
+    float dist = min(.5-p.x, .5-p.y);
+    Falloff = smoothstep(Range.x, Range.y, dist);
+}

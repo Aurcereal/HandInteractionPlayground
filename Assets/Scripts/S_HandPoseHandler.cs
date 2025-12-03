@@ -133,7 +133,7 @@ public class S_HandPoseHandler : MonoBehaviour
 
         Hand hand = frame.GetHand(sHand.chirality);
 
-        if(hand != null)
+        if(hand != null && !sHand.IsGrabbing)
         {
             Finger[] fingers = hand.fingers;
 
