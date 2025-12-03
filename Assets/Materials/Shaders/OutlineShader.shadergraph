@@ -4316,10 +4316,10 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -305.5999450683594,
-            "y": 692.0,
-            "width": 240.79995727539063,
-            "height": 117.5999755859375
+            "x": -380.7999572753906,
+            "y": 633.5999755859375,
+            "width": 240.7999725341797,
+            "height": 117.60003662109375
         }
     },
     "m_Slots": [
@@ -4338,7 +4338,7 @@
         "HLSL"
     ],
     "m_Precision": 0,
-    "m_PreviewExpanded": true,
+    "m_PreviewExpanded": false,
     "m_DismissedVersion": 0,
     "m_PreviewMode": 0,
     "m_CustomColors": {
