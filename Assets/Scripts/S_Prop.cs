@@ -35,6 +35,14 @@ public class S_Prop : MonoBehaviour
         }
     }
 
+    private void OnCollisionEnter(Collision col)
+    {
+        // if(rb.velocity.magnitude > 0.9f)
+        // {
+        //     S_HandManager.Ins.PlaySound("rubbleCrash", 0.2f);
+        // }
+    }
+
     private void FixedUpdate()
     {
         if(forceInteractions)

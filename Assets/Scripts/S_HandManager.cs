@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Leap;
+using System;
 
 public class S_HandManager : MonoBehaviour
 {
@@ -9,12 +10,21 @@ public class S_HandManager : MonoBehaviour
     void Awake()
     {
         Ins = this;
+        foreach(var pair in audioClipPairs)
+        {
+            audioLibrary.Add(pair.name, pair.clip);
+        }
     }
 
     [Header("References")]
     public GameObject ExplosionParticles;
+    public GameObject CreationParticles;
+    public GameObject AttractParticles;
     public GameObject[] SpawnableObjects;
     public Material[] ObjectMaterials;
+
+    public AudioPair[] audioClipPairs;
+    Dictionary<string, AudioClip> audioLibrary = new();
 
     [Header("Parameters")]
     public float fingerPairDistanceThreshold = 0.05f;
@@ -33,4 +43,19 @@ public class S_HandManager : MonoBehaviour
             mr.material = mat;
         }
     }
+
+    public void PlaySound(string soundName, float volumeMult = 1f, float pitchMult = 1f)
+    {
+        var sa = GetComponent<AudioSource>();
+        //sa.pitch = pitchMult * UnityEngine.Random.Range(0.9f, 1.1f);
+        sa.Play();
+        //sa.PlayOneShot(audioLibrary[soundName], volumeMult * UnityEngine.Random.Range(0.9f, 1.1f));
+    }
+}
+
+[Serializable]
+public struct AudioPair
+{
+    public string name;
+    public AudioClip clip;
 }

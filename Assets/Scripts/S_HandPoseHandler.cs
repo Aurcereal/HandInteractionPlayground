@@ -23,29 +23,85 @@ public class S_HandPoseHandler : MonoBehaviour
         sHand.leapProvider.OnUpdateFrame += OnUpdateFrame;
     }
 
+    GameObject attractParticles = null;
     #region Attractor
     void OnAttractorStart()
     {
         Debug.Log("Attract Start");
         sHand.HandField.Multiplier = 1f;
+
+        IEnumerator CreateAttractParticles()
+        {
+            attractParticles = Instantiate(S_HandManager.Ins.AttractParticles, Vector3.zero, Quaternion.AngleAxis(UnityEngine.Random.Range(0f, 360f), UnityEngine.Random.onUnitSphere));
+            foreach(var tra in attractParticles.GetComponentsInChildren<Transform>())
+                    tra.localScale = Vector3.zero;
+            const float duration = 0.2f;
+            float startTime = Time.time;
+            while(Time.time < startTime+duration)
+            {
+                foreach(var tra in attractParticles.GetComponentsInChildren<Transform>())
+                    tra.localScale = (Time.time-startTime)/duration * Vector3.one;
+                yield return null;
+            }
+            attractParticles.transform.localScale = Vector3.one;
+        }
+
+        if(attractParticles == null) 
+            StartCoroutine(CreateAttractParticles());
+        
     }
     void WhileAttractorContinuing(Vector3 pos, Vector3 fo)
     {
         sHand.HandField.Position = pos;
         sHand.HandField.Axis = fo;
+        
+        if(attractParticles != null)
+            attractParticles.transform.position = pos;
     }
     void OnAttractorEnd()
     {
         Debug.Log("Attract End");
         sHand.HandField.Multiplier = 0f;
+
+        IEnumerator DestroyAttractParticles()
+        {
+            const float duration = 0.2f;
+            float startTime = Time.time;
+            while(Time.time < startTime+duration)
+            {
+                if(attractParticles == null)
+                    break;
+
+                foreach(var tra in attractParticles.GetComponentsInChildren<Transform>())
+                    tra.localScale = Vector3.one * (1f-(Time.time-startTime)/duration);
+                yield return null;
+            }
+            if(attractParticles != null) {
+                Destroy(attractParticles);
+                attractParticles = null;
+            }
+        }
+        
+        StartCoroutine(DestroyAttractParticles());
+        
     }
     #endregion
+
+    void OnDisable()
+    {
+        if(attractParticles != null)
+        {
+            Destroy(attractParticles);
+            attractParticles = null;
+        }
+    }
 
     #region Creation
     void OnCreation(Vector3 origin, Vector3 direction)
     {
         Debug.Log("Create");
         S_HandManager.Ins.SpawnObject(origin, direction);
+        Instantiate(S_HandManager.Ins.CreationParticles, origin, Quaternion.AngleAxis(UnityEngine.Random.Range(0f, 360f), UnityEngine.Random.onUnitSphere));
     }
     #endregion
 
@@ -87,8 +143,9 @@ public class S_HandPoseHandler : MonoBehaviour
             {
                 if(!prevPoseState.actionsEnabled[att])
                     OnAttractorStart();
-                else
+                else {
                     WhileAttractorContinuing(poseState.actionPositions[att], sHand.interactorTransform.forward);
+                }
             } 
             else if(prevPoseState.actionsEnabled[att])
             {
