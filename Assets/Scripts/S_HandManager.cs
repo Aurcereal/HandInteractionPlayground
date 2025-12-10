@@ -17,17 +17,20 @@ public class S_HandManager : MonoBehaviour
     }
 
     [Header("References")]
+    public LeapProvider LeapProvider;
     public GameObject ExplosionParticles;
     public GameObject CreationParticles;
     public GameObject AttractParticles;
     public GameObject[] SpawnableObjects;
     public Material[] ObjectMaterials;
+    public Material TintMaterial;
 
     public AudioPair[] audioClipPairs;
     Dictionary<string, AudioClip> audioLibrary = new();
 
     [Header("Parameters")]
     public float fingerPairDistanceThreshold = 0.05f;
+    public float palmClapDistanceThreshold = 0.08f;
 
     public void SpawnObject(Vector3 pos, Vector3 dir)
     {

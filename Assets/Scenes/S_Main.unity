@@ -667,7 +667,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactorTransform: {fileID: 533964891}
-  leapProvider: {fileID: 1834435008}
   chirality: 0
   interactor: {fileID: 390595835}
   activationThreshold: 0.891
@@ -836,6 +835,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5236ca5a849d83547b5682e4c0e3bd96, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  LeapProvider: {fileID: 1834435008}
   ExplosionParticles: {fileID: 8179407477243985542, guid: 8107df222486dc0468b74cdaef540715,
     type: 3}
   CreationParticles: {fileID: 8179407477243985542, guid: cf86c0ab578bfc24c967039e87b96c35,
@@ -858,10 +858,12 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 844c9c49ba32b7946a4fbf8f7bbee74d, type: 2}
   - {fileID: 2100000, guid: cda8830a1525bac43a0d9fc65eb56e8d, type: 2}
   - {fileID: 2100000, guid: a364815ddf155e74b959d05433bfc593, type: 2}
+  TintMaterial: {fileID: 2100000, guid: 3d8250047ecb8d247a4028222af30763, type: 2}
   audioClipPairs:
   - name: rubbleCrash
     clip: {fileID: 8300000, guid: d8d21de1e532a134c82f2f635d552d31, type: 3}
   fingerPairDistanceThreshold: 0.05
+  palmClapDistanceThreshold: 0.08
 --- !u!82 &715685230
 AudioSource:
   m_ObjectHideFlags: 0
@@ -958,6 +960,24 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &715685231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 715685227}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e67e538e86e042244bf2b1693d6d4d6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tintColors:
+  - {r: 1, g: 1, b: 1, a: 0}
+  - {r: 1, g: 0.45999998, b: 0.8910093, a: 0}
+  - {r: 0, g: 1.0484881, b: 2, a: 0}
+  - {r: 2.519016, g: 0.026835527, b: 0, a: 0}
+  - {r: 0.38196903, g: 0, b: 5.038032, a: 0}
 --- !u!1001 &959601613
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7160,6 +7180,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 715685230}
+    - targetCorrespondingSourceObject: {fileID: 6817138177699620381, guid: 8c79c4473c027f44e92a3f42d0e9de89,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 715685231}
     - targetCorrespondingSourceObject: {fileID: 1059044157909838608, guid: 8c79c4473c027f44e92a3f42d0e9de89,
         type: 3}
       insertIndex: -1
@@ -8239,7 +8263,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactorTransform: {fileID: 1858349219}
-  leapProvider: {fileID: 1834435008}
   chirality: 1
   interactor: {fileID: 1823568803}
   activationThreshold: 0.891

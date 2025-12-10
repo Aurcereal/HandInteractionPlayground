@@ -7,7 +7,6 @@ public class S_Hand : MonoBehaviour
 {
     [Header("References")]
     public Transform interactorTransform;
-    public LeapProvider leapProvider;
     public Chirality chirality;
     public S_HandInteractor interactor;
 
@@ -32,7 +31,7 @@ public class S_Hand : MonoBehaviour
 
     private void Start()
     {
-        leapProvider.OnUpdateFrame += OnUpdateFrame;
+        S_HandManager.Ins.LeapProvider.OnUpdateFrame += OnUpdateFrame;
         interactor.hand = this;
     }
 

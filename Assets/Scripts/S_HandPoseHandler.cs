@@ -20,7 +20,7 @@ public class S_HandPoseHandler : MonoBehaviour
 
     void Start()
     {
-        sHand.leapProvider.OnUpdateFrame += OnUpdateFrame;
+        S_HandManager.Ins.LeapProvider.OnUpdateFrame += OnUpdateFrame;
     }
 
     GameObject attractParticles = null;
